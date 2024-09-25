@@ -4,13 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
-class Student extends Model
+class Manager extends Model
 {
     use HasFactory;
-
-    use Notifiable;
-    protected $guarded=[];
+    protected $guarded = [];
     protected $hidden = ['created_at', 'updated_at'];
 }

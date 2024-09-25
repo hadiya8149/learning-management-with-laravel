@@ -19,6 +19,21 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\UserServiceInterface::class,
 			\App\Services\UserService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\StudentServiceInterface::class,
+			\App\Services\StudentService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\ManagerServiceInterface::class,
+			\App\Services\ManagerService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\QuizServiceInterface::class,
+			\App\Services\QuizService::class
+		);
     }
 
     /**

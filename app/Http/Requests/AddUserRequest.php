@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 class AddUserRequest extends FormRequest
 {
     /**
@@ -35,8 +36,30 @@ class AddUserRequest extends FormRequest
 
             return [
             'name'=>'required',
-            'email'=>'required|email|unique',
+            'email'=>'required|email|unique:users,email',
             ];
         }
+        if($this->routeIs('reject.student')){
+            return [
+                'id'=>'required|exists:students,id',
+            ];
+        }
+    }
+    public function messages(){
+        return [
+            'name.required'=>'Name field is required.',
+            'email.required'=>'Email field is required.',
+            'email.unique'=>'Email address not available.'
+        ];
+    }
+    
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $this->validator->errors();
+
+        $response =  response()->json([
+            'validation errors'=>$errors
+        ]);
+        throw new HttpResponseException($response);
     }
 }

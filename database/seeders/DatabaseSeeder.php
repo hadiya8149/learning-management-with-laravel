@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -22,7 +25,12 @@ class DatabaseSeeder extends Seeder
             'email_verified_at'=>date('Y-m-d H:i:s'),
 
         ]);
-        $user;
-        $user->assignRole('Super Admin');
+        $user = User::find(1);
+        $user->assignRole('Super Admin');      
+        $role =Role::findByName('Super Admin');
+        $permissions =$role->permissions->toArray();
+        foreach($permissions as $permission){
+            $user->givePermissionTo([$permission['id']]);
+        }
     }
 }

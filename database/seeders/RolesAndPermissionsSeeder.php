@@ -18,26 +18,38 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        Permission::create(['name' => 'all permissions']);
+        $permission1 = Permission::create(['name'=> 'user can reject student signup form']);
+        $permission2 = Permission::create(['name'=>'user can accept student signup form']);
+        $permission3= Permission::create(['name'=>'user can add user']);
+        $permission4 = Permission::create(['name'=>'user can delete user']);
+        $permission5  = Permission::create(['name'=>'user can view managers']);
+        
+//manager and admin permissions
+        $permission6  = Permission::create(['name' => 'user can view students']);
 
-        Permission::create(['name' => 'view students']);
-        Permission::create(['name' => 'assign quizzes']);
-    
-        Permission::create(['name' => 'attempt assigned quiz']);
-        Permission::create(['name' => 'view assigned quiz']);
-        Permission::create(['name' => 'view quiz result']);
+        $permission7  = Permission::create(['name'=>'user can create quiz']);
+        $permission8  = Permission::create(['name'=>'user can update quiz']);
+        $permission9  = Permission::create(['name'=>'user can delete quiz']);
 
-
-        Role::create(['name'=>'Super Admin']);
+        $permission10  = Permission::create(['name'=>'user can view all quizzes']);
+        $permission11  = Permission::create(['name' => 'user can assign quiz']);
+// student permissions
+        $permission12  = Permission::create(['name' => 'user can attempt assigned quiz']);
+        $permission13  = Permission::create(['name' => 'user can view assigned quiz']);
+        $permission14  = Permission::create(['name' => 'user can view quiz result']);
+// create roles
+        $adminRole=Role::create(['name'=>'Super Admin']);
         $managerRole = Role::create(['name'=>'Manager']);
         $studentRole = Role::create(['name'=>'Student']);
 
+        $adminRole->givePermissionTo([$permission1->id, $permission2->id, $permission3->id,
+                                        $permission4->id, $permission5->id, $permission6->id, $permission7->id,
+                                        $permission8->id, $permission9->id, $permission10->id, $permission11->id ]);
 
-        $managerRole->givePermissionTo(['view students', 'assign quizzes']);
+        $managerRole->givePermissionTo([ $permission6->id, $permission7->id,
+                                            $permission8->id, $permission9->id]);
 
-        $studentRole->givePermissionTo(['attempt assigned quiz', 'view assigned quiz','view quiz result']);
-
-        
-        
+        $studentRole->givePermissionTo([$permission12->id, $permission13->id, $permission14->id]);
+    
     }   
 }

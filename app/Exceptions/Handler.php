@@ -9,6 +9,8 @@ use JWTAuth;
 use Exception;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 
 class Handler extends ExceptionHandler
 {
@@ -51,6 +53,8 @@ class Handler extends ExceptionHandler
 
             
         });
-        
+        $this->renderable(function(JWTException $exception, $request){
+            return response()->json(['error'=>'Unauthorized access'], 401);
+        });        
     }
 }

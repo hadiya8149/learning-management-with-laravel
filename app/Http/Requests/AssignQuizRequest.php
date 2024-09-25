@@ -4,9 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
-class StudentSignupRequest extends FormRequest
+use Illuminate\Http\Exceptions\HttpResponseException;
+use ILluminate\Support\Facades\Auth;
+
+class AssignQuizRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,9 +17,9 @@ class StudentSignupRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::user->can('user can assign quiz');
     }
-    protected $maxFileSize=1024*3;
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,34 +28,25 @@ class StudentSignupRequest extends FormRequest
     public function rules()
     {
         return [
-
-            'email'=>'required|email',
-            'name'=>'required',
-            'phone_number'=>'required|digits:12',
-            'cv' => 'required|file|mimes:doc,pdf,csv,docx|max:'.$this->maxFileSize,
+            'quiz_id'=>'required|exits:quizzes,id',
+            'email'=>'required|exists:users,email'
         ];
     }
-
     public function messages()
     {
         return [
-            'email.required'=>'email field is required',
-            'name.required'=>'name field is required',
-          'phone_number.digits'=>'Phone number should contain 12 digits',
-          'cv.mimes'=>'cv file format should be either doc,pdf,csv or docx',
-          'cv.max'=>'File should be smaller than '.$this->maxFileSize. 'MB',
-
+            'quiz_id.required'=>'Quiz id  is required',
+            'quiz_id.exists'=> 'Invalid quiz id',
+            'email.required'=>'Email  is required',
+            'email.exists'=>'Invalid email address',
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
         $errors = $this->validator->errors();
-
         $response =  response()->json([
-            'validation errors'=>$errors
+            'validation errors'=>$errors,
         ]);
         throw new HttpResponseException($response);
     }
-
 }

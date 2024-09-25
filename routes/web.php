@@ -24,3 +24,9 @@ Route::get('send-password', function(){
                         'token'=>'remeber string',
                     ]);
 });
+Route::get('/', function(){
+    return "hello";
+});
+Route::get('/reset-password/{token}', function ($token) {
+    return view('dummy route');
+})->middleware('guest')->name('password.reset');

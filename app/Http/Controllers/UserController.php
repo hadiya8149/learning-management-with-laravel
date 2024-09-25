@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use ILluminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\StudentSignupRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\AddUserRequest;
-
+use App\Http\Requests\PasswordUpdateRequest;
 use App\Services\UserService;
+use App\Helpers\Helpers;
+
 class UserController extends Controller
 {
     private $userService;
@@ -17,9 +23,21 @@ class UserController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        $token = $this->userService->login($request->validated());
-        return response()->json(['token'=>$token]);
+        $data = $this->userService->login($request->validated());
+        if($data){
+            $headers  = ['Authorization'=>'Bearer '.$data['token']];
+            return Helpers::sendSuccessResponse(200, 'Logged in successfully', $data, $headers);
+        }
+        else{
+            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+        }
     }
+    public function logout(){
+        Session::flush();
+        Auth::logout();
+        return redirect('/login');
+    }
+
     public function registerStudent(StudentSignupRequest $request)
     {
         $data =  $request->validated();
@@ -32,34 +50,31 @@ class UserController extends Controller
     }
     public function addManager(AddUserRequest $request)
     {
-        $this->userService->addManager($request->validated());
+        $data = $this->userService->addManager($request->validated());
+        return Helpers::sendSuccessResponse(200, 'Manager added succesfully');
     }
     public function addStudent(AddUserRequest $request)
     {
-        $this->userService->addStudent($request->validated());   
-    }
-    public function update()
-    {
+
+        $this->userService->addStudent($request->validated()); 
+        return Helpers::sendSuccessResponse(200, 'Student added succesfully');
 
     }
 
-    public function setPassword()
-    {
-
+    public function rejectStudent(AddUserRequest $request){
+        $this->userService->rejectStudent($request->validated());
+        return Helpers::sendSuccessResponse(200, 'Student rejected succesfully');
+        
     }
 
-    public function submitForgotPasswordForm()
+    public function setPassword(PasswordUpdateRequest $request)
     {
+      $result =   $this->userService->setPassword($request->validated());
+      if(!$result){
+        return Helpers::sendFailureResponse(401, 'Invalid Credentials');
 
-    }
-
-    public function showResetPasswordForm() # web function not needed
-    {
-
-    }
-
-    public function submitResetPasswordForm()
-    {
+      }
+      return Helpers::sendSuccessResponse(200, 'Password updated succesfully');
 
     }
     

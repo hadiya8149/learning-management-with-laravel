@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InformAdminForSignupRequest extends Notification
+class SendStudentRejectNotification extends Notification
 {
     use Queueable;
 
@@ -41,10 +41,8 @@ class InformAdminForSignupRequest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting('Konichiwa')
-                    ->line('Dear Admin')
-                    ->action('Review Application', url('/')) // url to review the user form submission 
-                    ->line('A student has submitted the signup form. Please review and approve it. Thanks');
+                    ->greeting("Dear Student")
+                    ->line('Your signup request has been rejected by the admin.');
     }
 
     /**

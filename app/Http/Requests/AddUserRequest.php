@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use ILluminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
@@ -14,8 +14,9 @@ class AddUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // check if user is admin
-        return true;
+        // check if user has permission to add user
+        $user = Auth::user();
+        return $user->hasPermissionTo('user can add user');
     }
 
     /**
@@ -28,8 +29,7 @@ class AddUserRequest extends FormRequest
         if($this->routeIs('add.student')){
 
             return [
-                'id'=>'required|exists:students,id',
-                
+                'email'=>'required|exists:students,email|unique:users,email',
             ];
         }
         if($this->routeIs('add.manager')){
@@ -41,7 +41,7 @@ class AddUserRequest extends FormRequest
         }
         if($this->routeIs('reject.student')){
             return [
-                'id'=>'required|exists:students,id',
+                'email'=>'required|exists:students,email',
             ];
         }
     }
@@ -49,7 +49,7 @@ class AddUserRequest extends FormRequest
         return [
             'name.required'=>'Name field is required.',
             'email.required'=>'Email field is required.',
-            'email.unique'=>'Email address not available.'
+            'email.unique'=>'Account already exists.'
         ];
     }
     
@@ -58,7 +58,7 @@ class AddUserRequest extends FormRequest
         $errors = $this->validator->errors();
 
         $response =  response()->json([
-            'validation errors'=>$errors
+            'errors'=>$errors
         ]);
         throw new HttpResponseException($response);
     }

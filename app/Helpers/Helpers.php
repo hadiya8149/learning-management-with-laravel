@@ -6,7 +6,10 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Notifications\SendSetPasswordLink;
-
+use App\Models\Manager;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+ 
 class Helpers{
 
     /***
@@ -15,20 +18,33 @@ class Helpers{
      */
     public static function addUserAndSendSetPasswordMail(array $data)
     {
-        $user = User::create($data);
-        $user->remember_token =  Str::random(60);
-        $user->password = null;
-        $user->assignRole($data['role']);
-        $user->save();
-        // assign role and give permission
-        $role = Role::findByName($data['role']);
-        $permissions = $role->permissions->toArray();
-        $permissionIds = array_column($permissions, 'id');
-        $user->givePermissionTo($permissionIds);
+        try{
+            DB::beginTransaction();
+            $user = User::create($data);
+            $user->remember_token =  Str::random(60);
+            $user->password = null;
+            $user->assignRole($data['role']);
+            $user->save();
+
+            // assign role and give permission
+            $role = Role::findByName($data['role']);
+
+            $permissions = $role->permissions->toArray();
+
+            $permissionIds = array_column($permissions, 'id');
+
+            DB::commit();            
+
+        }
+        catch(QueryException $exception){
+
+            DB::rollBack();
+        }
         // send set password notification
         $name = $user->name;
         $rememberToken =$user->remember_token;
-        $user->notify(new SendSetPasswordLink($name, $rememberToken));
+        $email = $user->email;
+        $user->notify(new SendSetPasswordLink($name, $rememberToken, $email));
         if($data['role']=='Manager'){
             Manager::create([
                 'name'=>$data['name'],
@@ -36,7 +52,6 @@ class Helpers{
                 'user_id'=>$user->id,
             ]);
         }
-        return $user;
     }
     public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null)
     {
@@ -45,13 +60,13 @@ class Helpers{
                 'status'=>$status,
                 'message'=>$message,
                 'data'=>$data
-            ])->withHeaders($headers);    
+            ], $status)->withHeaders($headers);    
         }
         return response()->json([
             'status'=>$status,
             'message'=>$message,
             'data'=>$data
-        ]);
+        ], $status);
     }
 
     /**

@@ -26,9 +26,18 @@ class ForgotPasswordRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'email'=>'required|email'
-        ];
+        if($this->routeIs('password.forgot')){
+            return [
+                'email'=>'required|email'
+            ];
+        }
+        if($this->routeIs('password.update')){
+            return [
+                'email'=>'required|email|exists:users,email',
+                'password'=>'required|string|max:11',
+                'password_confirmation'=>'required|'
+            ];
+        }
     }
     public function messages()
     {
@@ -41,7 +50,7 @@ class ForgotPasswordRequest extends FormRequest
     {
         $errors = $this->validator->errors();
         $response =  response()->json([
-            'validation errors'=>$errors,
+            'errors'=>$errors,
         ]);
         throw new HttpResponseException($response);
     }

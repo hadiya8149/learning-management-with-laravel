@@ -17,12 +17,16 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('quiz_id');
             $table->unsignedBigInteger('student_id');
-            $table->integer('status');
-            $table->integer('obtained_marks');
-            $table->datetime('attempted_at');
+            $table->String('status')->default('assigned');
+            $table->integer('score')->nullable()->default(null);
+            $table->datetime('attempted_at')->nullable()->default(null);
+            $table->datetime('due_date');
             $table->timestamps();
-            $table->foreign("quiz_id")->references("id")->on("quizzes")->nullable();
-            $table->foreign("student_id")->references("id")->on("students")->nullable();
+            $table->unsignedBigInteger('assigned_by');
+            $table->foreign('assigned_by')->references('id')->on('users');
+            $table->datetime('assigned_at')->nullable()->default(null);
+            $table->foreign("quiz_id")->references("id")->on("quizzes");
+            $table->foreign("student_id")->references("id")->on("students");
 
 
         });

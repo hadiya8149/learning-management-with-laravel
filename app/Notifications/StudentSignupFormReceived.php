@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class StudentSignupFormReceived extends Notification
+class StudentSignupFormReceived extends Notification implements shouldQueue
 {
     use Queueable;
 

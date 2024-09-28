@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Quiz;
-class AssignedQuizzes extends Model
+
+class Question extends Model
 {
     use HasFactory;
-    protected $guarded = [];
+    protected $hidden = ['correct_answer', 'created_at', 'updated_at'];
     public function quiz()
     {
-        return $this->belongsTo(Quiz::class, 'quiz_id')->withDefault();
+        return $this->belongsToMany(Quiz::class);
+
     }
 }

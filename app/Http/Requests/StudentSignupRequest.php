@@ -27,7 +27,7 @@ class StudentSignupRequest extends FormRequest
     {
         return [
 
-            'email'=>'required|email',
+            'email'=>'required|email|unique:students,email',
             'name'=>'required',
             'phone_number'=>'required|digits:12',
             'cv' => 'required|file|mimes:doc,pdf,csv,docx|max:'.$this->maxFileSize,
@@ -51,8 +51,8 @@ class StudentSignupRequest extends FormRequest
         $errors = $this->validator->errors();
 
         $response =  response()->json([
-            'validation errors'=>$errors
-        ]);
+            'errors'=>$errors
+        ], 400);
         throw new HttpResponseException($response);
     }
 

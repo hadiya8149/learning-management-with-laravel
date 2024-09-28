@@ -18,13 +18,18 @@ return new class extends Migration
             $table->String('email');
             $table->String('name');            
             $table->String('phone_number');
-
             $table->String('cv');
-
             $table->String('status')->default('pending');
-            $table->timestamps();
 
+            $table->timestamps();
         });
+        // Schema::table('students', function(Blueprint $table){
+        //     $table->unsignedBigInteger('user_id')->nullable();
+        //     $table->unsignedBigInteger('application_id');
+        //     $table->foreign('user_id')->references('users')->on('id');
+        //     $table->foreign('application_id')->references('student_applications')->on('id');
+
+        // });
     }
 
     /**
@@ -32,8 +37,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::dropIfExists('students');
-    }
+    // public function down()
+    // {
+    //     Schema::dropIfExists('students');
+    // }
 };

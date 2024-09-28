@@ -30,3 +30,6 @@ Route::get('/', function(){
 Route::get('/reset-password/{token}', function ($token) {
     return view('dummy route');
 })->middleware('guest')->name('password.reset');
+Route::get('/login', function (){
+    return 'login';
+});

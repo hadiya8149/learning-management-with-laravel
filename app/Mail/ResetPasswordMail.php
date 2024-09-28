@@ -12,15 +12,19 @@ use Illuminate\Queue\SerializesModels;
 class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public $url;
+    public $email;
+    public $name;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($email, $url, $token)
     {
-        //
+        $this->url = 'http://localhost/?token='.$token.'&email='.$url;
+        $this->email = $email;
+        $this->name = $name;
     }
 
     /**
@@ -40,12 +44,16 @@ class ResetPasswordMail extends Mailable
      *
      * @return \Illuminate\Mail\Mailables\Content
      */
-    public function content()
-    {
-        return new Content(
-            view: 'emails.send-forgot-password-mail',
-        );
-    }
+    public function build()
+{
+    return $this->view('emails.setPassword')
+                    ->with([
+                        'name'=>$this->name,
+
+                        'setPasswordUrl'=>$this->url,
+                    ]);
+ 
+}
 
     /**
      * Get the attachments for the message.

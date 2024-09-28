@@ -9,23 +9,26 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SetPassword extends Mailable
+class SetPassword extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $name;
     private $url;
     public $rememberToken;
+    public $email;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($name, $token)
+    public function __construct($name, $token, $email)
     {
         $this->name = $name;
         $this->rememberToken = $token;
-        $this->url = env('BASE_URL').'/set-password/?token='.$this->rememberToken;
+        $this->email = $email;
+        $this->url = '/set-password/?token='.$this->rememberToken.'&email='.$this->email;
+       
     }
 
     /**

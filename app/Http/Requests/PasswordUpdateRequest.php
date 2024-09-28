@@ -4,10 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rules\Password;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 class PasswordUpdateRequest extends FormRequest
 {
     /**
@@ -42,6 +42,12 @@ class PasswordUpdateRequest extends FormRequest
             'id'=>'required'
             ];
         }
+            return [
+                'token'=>'required', // token exists in database
+                'email'=>'required|exists:users,email',
+                'password_confirmation'=>'required',
+                'password'=>['required', 'confirmed', Password::min(8),'max:11']
+                ];
     }
     public function messages(){
         return [
@@ -60,7 +66,7 @@ class PasswordUpdateRequest extends FormRequest
         $errors = $this->validator->errors();
 
         $response =  response()->json([
-            'validation errors'=>$errors
+            'errors'=>$errors
         ]);
         throw new HttpResponseException($response);
     }

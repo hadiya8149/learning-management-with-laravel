@@ -29,13 +29,19 @@ class UserController extends Controller
             return Helpers::sendSuccessResponse(200, 'Logged in successfully', $data, $headers);
         }
         else{
-            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+            if($data ==403){
+                $message = "Please set your password before logging in ";
+            }
+            else{
+                $message = "Invalid Credentials";
+            }
+            return Helpers::sendFailureResponse(401, $message);
         }
     }
     public function logout(){
         Session::flush();
-        Auth::logout();
-        return redirect('/login');
+        Auth::logout();       
+        return Helpers::sendSuccessResponse(200, 'Logged out successfully');
     }
 
     public function registerStudent(StudentSignupRequest $request)
@@ -45,8 +51,14 @@ class UserController extends Controller
             $cvPath = $request->file('cv')->store('cvs');
         }
         $data['cv']=$cvPath;
-        $this->userService->registerStudent($data);   
-        return;
+        $result = $this->userService->registerStudent($data);
+        if($result){
+            return Helpers::sendSuccessResponse(200, 'Form submitted successfully');
+        }   
+        else{
+            return Helpers::sendFailureResponse(401, 'Could not signup. Please try again later');
+            
+        }
     }
     public function addManager(AddUserRequest $request)
     {
@@ -55,7 +67,7 @@ class UserController extends Controller
     }
     public function addStudent(AddUserRequest $request)
     {
-
+        
         $this->userService->addStudent($request->validated()); 
         return Helpers::sendSuccessResponse(200, 'Student added succesfully');
 

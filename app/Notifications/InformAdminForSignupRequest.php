@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InformAdminForSignupRequest extends Notification
+class InformAdminForSignupRequest extends Notification implements shouldQueue
 {
     use Queueable;
 

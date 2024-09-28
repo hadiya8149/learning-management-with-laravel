@@ -16,10 +16,9 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("quiz_id");
-            $table->String("question");
-            $table->integer("question_score");
+            $table->String("question_text");
             $table->json("options");
-            $table->String("answer");
+            $table->String("correct_answer");
             $table->timestamps();
             $table->foreign("quiz_id")->references("id")->on("quizzes");
         });

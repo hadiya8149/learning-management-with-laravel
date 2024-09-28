@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Mail\SetPassword;
-class SendSetPasswordLink extends Notification
+class SendSetPasswordLink extends Notification  implements ShouldQueue
 {
     use Queueable;
 
@@ -18,16 +18,18 @@ class SendSetPasswordLink extends Notification
      */
     public $name;
     private $url;
+    public $email;
     public $rememberToken;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($name, $token)
+    public function __construct($name, $token, $email)
     {
         $this->name = $name;
         $this->rememberToken = $token;
+        $this->email = $email;
     }
 
     /**
@@ -49,7 +51,7 @@ class SendSetPasswordLink extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new SetPassword($this->name, $this->rememberToken))->to($notifiable->email);
+        return (new SetPassword($this->name, $this->rememberToken, $this->email))->to($notifiable->email)->onQueue('set-password-queue');
     }
 
     /**

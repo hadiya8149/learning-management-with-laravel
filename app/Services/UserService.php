@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Str;
 use ILluminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -17,37 +18,50 @@ use App\Notifications\StudentSignupFormReceived;
 use App\Notifications\InformAdminForSignupRequest;
 use App\Notifications\SendSetPasswordLink;
 use App\Notifications\SendStudentRejectNotification;
+use App\Jobs\SendRegistrationMailJob;
+use App\Jobs\SendNotificationEmailJob;
 class UserService implements UserServiceInterface
 {
     public function login($data)
     {
+        $user = User::where('email', $data['email'])->first();
+        $isEmailVerified = $user->email_verified_at;
+        if(!$isEmailVerified){
+            return 403; // user not allowed to login because he has not set his password yet
+        }
         $token = Auth::attempt(['email'=>$data['email'], 'password'=>$data['password']]);
         if(!$token){
-            return false;
+            return 401;
         }
+
         $user = Auth::user();
+        
+        $permissions = $user->permissions->toArray();
+        $permissions = array_column($permissions, 'name');
         if($user->hasRole('Super Admin')){
             $role='admin';
         }
         else if($user->hasRole('Manager')){
             $role='manager';
+
         }
         else if($user->hasRole('Student')){
             $role='student';
+            $student = Student::where('email', $user->email)->first();
+            $id = $student->id;
+            return ['role'=>$role, 'permissions'=>$permissions, 'token'=>$token, 'id'=>$id];
+
         }
-        $permissions = $user->permissions->toArray();
-        $permissions = array_column($permissions, 'name');
         return ['role'=>$role, 'permissions'=>$permissions, 'token'=>$token];
     }
     
     public function registerStudent($studentData)
     {
+        
         $student = Student::create($studentData);
-    
-        $student->notify(new StudentSignupFormReceived);
-        $admin = User::find(1);
-        $admin->notify(new InformAdminForSignupRequest);
-    
+        SendRegistrationMailJob::dispatchAfterResponse($student);
+        return true;
+
     }
     public function addManager($data)
     {
@@ -57,22 +71,31 @@ class UserService implements UserServiceInterface
     }
     public function addStudent($data)
     {
-        $id = $data['id'];
-        $student = Student::where('id', $id)->first();
-        $student->status = 'accepted';
-        $student->save();
-        $name = $data['name'];
-        $userData = ['email'=>$student->email, 'name'=>$name,'role'=>'Student'];
-        Helpers::addUserAndSendSetPasswordMail($userData);
+        try{
+            DB::beginTransaction();
+            $email = $data['email'];
+            $student = Student::where('email', $email)->first();
+            $student->status = 'accepted';
+            // $student->user_id = $user->id;
 
+            $student->save();
+            $name = $student->name;
+            $userData = ['email'=>$student->email, 'name'=>$name,'role'=>'Student'];
+            DB::commit();
+            Helpers::addUserAndSendSetPasswordMail($userData);
 
+        }
+        catch(QueryException $exception){
+            DB::rollBack();
+        }
     }
     public function rejectStudent($data){
-        $id = $data['id'];
-        $student = Student::find($id);
+        $email = $data['email'];
+        $student = Student::where('email', $email)->first();
         $student->status='rejected';
         $student->save();
-        $student->notify(new SendStudentRejectNotification);
+        SendNotificationEmailJob::dispatchAfterResponse($student, new SendStudentRejectNotification);
+        // $student->notify(new SendStudentRejectNotification);
     }
 
     
@@ -85,8 +108,9 @@ class UserService implements UserServiceInterface
         }
         $user->password = bcrypt($data['password']);
         $user->remember_token=null;
-        $user->email_verified_at =date('Y-m-d H:i:s');
+        $user->email_verified_at = date('Y-m-d H:i:s');
         $user->save();
+
         return true;
     }
 

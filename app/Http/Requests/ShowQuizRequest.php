@@ -4,12 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use ILluminate\Support\Facades\Auth;
-
 use Illuminate\Http\Exceptions\HttpResponseException;
+use ILluminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
-
-class AssignQuizRequest extends FormRequest
+class ShowQuizRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +16,15 @@ class AssignQuizRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->can('user can assign quiz');
+        // develop logic to assign this permission only when a user has been assigned quiz or not??? 
+        $user = Auth::user();
+        if($user->hasRole('Student')){
+           return $user->can('user can view assigned quiz'); 
+        }
+        else if ($user->hasRole(['Manager', 'Super Admin']))
+       {
+        return true;
+       }
     }
 
     /**
@@ -29,17 +35,7 @@ class AssignQuizRequest extends FormRequest
     public function rules()
     {
         return [
-            'quiz_id'=>'required|exists:quizzes,id',
-            'student_id'=>'required|exists:students,id'
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'quiz_id.required'=>'Quiz id  is required',
-            'quiz_id.exists'=> 'Invalid quiz id',
-            'student_id.required'=>'id  is required',
-            'student_id.exists'=>'Invalid student id',
+            'id'=>'required|exists:quizzes,id'
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -48,7 +44,8 @@ class AssignQuizRequest extends FormRequest
 
         $response =  response()->json([
             'errors'=>$errors
-        ]);
+        ], 400);
         throw new HttpResponseException($response);
     }
+
 }

@@ -13,17 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        // keep track of
-        Schema::create('quizzes', function (Blueprint $table) {
+        Schema::create('student_applications', function (Blueprint $table) {
             $table->id();
-            $table->String('title');
-            $table->String('description');
+            $table->String('email');
+            $table->String('name');            
+            $table->String('phone_number');
+            $table->String('cv');
+            $table->String('status')->default('pending');
             $table->timestamps();
-            $table->datetime('start_time')->nullable();
-            $table->datetime('end_time')->nullable();
         });
     }
-
 
     /**
      * Reverse the migrations.
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quizzes');
+        Schema::dropIfExists('student_applications');
     }
 };

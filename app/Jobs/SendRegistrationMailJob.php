@@ -38,6 +38,6 @@ class SendRegistrationMailJob implements ShouldQueue
     {
         $this->student->notify(new StudentSignupFormReceived);
         $this->admin->notify(new InformAdminForSignupRequest);
-         //check the response time and after that check afterresponse 
+
     }
 }

@@ -15,14 +15,16 @@ class SendNotificationEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    
+    private $notifWication;
+    private $user;
     /**
      * Create a new job instance.
      *
      * 
      * @return void
      */
-    private $notification;
-    private $user;
+
     public function __construct($user, $notification)
     {
      $this->notification = $notification;
@@ -36,6 +38,7 @@ class SendNotificationEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        Notification::send($this->user, $this->notification);
+            Notification::send($this->user, $this->notification);
+
     }
 }

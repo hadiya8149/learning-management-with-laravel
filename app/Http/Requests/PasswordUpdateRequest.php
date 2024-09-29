@@ -17,7 +17,7 @@ class PasswordUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; // authorize if the token matches against the email
+        return true; 
     }
 
     /**
@@ -27,34 +27,20 @@ class PasswordUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->routeIs('password.set')){
 
             return [
-            'token'=>'required', // token exists in database
+            'token'=>'required', 
             'email'=>'required|exists:users,email',
             'password_confirmation'=>'required',
             'password'=>['required', 'confirmed', Password::min(8),'max:11']
             ];
-        }
-        if($this->routeIs('password.reset')){
-
-            return [
-            'id'=>'required'
-            ];
-        }
-            return [
-                'token'=>'required', // token exists in database
-                'email'=>'required|exists:users,email',
-                'password_confirmation'=>'required',
-                'password'=>['required', 'confirmed', Password::min(8),'max:11']
-                ];
+     
     }
     public function messages(){
         return [
         'token.required'=>'Password reset token is required',
         'email.required'=>"Email field can't be empty",
         'email.exists'=>"Account not found",
-        'token.exists'=>"Invalid token",
         'password.required'=>'Password field is required',
         'password_confirmation.required'=>'password confirmation field is required',
         'password.confirmed'=>"Passwords donot match",

@@ -82,6 +82,7 @@ class UserController extends Controller
     public function setPassword(PasswordUpdateRequest $request)
     {
       $result =   $this->userService->setPassword($request->validated());
+
       if(!$result){
         return Helpers::sendFailureResponse(401, 'Invalid Credentials');
 

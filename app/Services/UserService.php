@@ -27,11 +27,11 @@ class UserService implements UserServiceInterface
         $user = User::where('email', $data['email'])->first();
         $isEmailVerified = $user->email_verified_at;
         if(!$isEmailVerified){
-            return 403; // user not allowed to login because he has not set his password yet
+            return false; // user not allowed to login because he has not set his password yet
         }
         $token = Auth::attempt(['email'=>$data['email'], 'password'=>$data['password']]);
         if(!$token){
-            return 401;
+            return false;
         }
 
         $user = Auth::user();
@@ -95,22 +95,26 @@ class UserService implements UserServiceInterface
         $student->status='rejected';
         $student->save();
         SendNotificationEmailJob::dispatchAfterResponse($student, new SendStudentRejectNotification);
-        // $student->notify(new SendStudentRejectNotification);
     }
 
-    
+    // remember token is for keep me logged in
+
     public function setPassword($data)
     {
         $email = $data['email'];
         $user = User::where('email', $email)->first();
-        if(! $data['token']==$user->remember_token){
+        if(!$user->token_expired_at>now()){
+            dd("token expoired");
+        }
+        if(! $data['token']==$user->reset_password_token){
             return false;
         }
+
         $user->password = bcrypt($data['password']);
-        $user->remember_token=null;
+        $user->reset_password_token=null;
+        $user->token_expired_at=null;
         $user->email_verified_at = date('Y-m-d H:i:s');
         $user->save();
-
         return true;
     }
 

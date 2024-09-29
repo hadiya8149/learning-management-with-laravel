@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
+use App\Jobs\QueuedPasswordResetJob;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements JWTSubject
 { 
@@ -68,5 +69,19 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
+    public function sendPasswordResetNotification($token)
 
+    {
+        $this->reset_password_token = $token;
+        $this->token_expired_at = now()->addHours(24);
+        $this->save();
+
+        Log::info("this is password resset token");
+        Log::info($token);
+     
+        
+        // dispactches the job to the queue passing it this User object
+        QueuedPasswordResetJob::dispatch($this,$token);
+    }
+   
 }

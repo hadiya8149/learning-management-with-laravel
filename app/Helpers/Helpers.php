@@ -21,8 +21,9 @@ class Helpers{
         try{
             DB::beginTransaction();
             $user = User::create($data);
-            $user->remember_token =  Str::random(60);
+            $user->passwrod_reset_token =  Str::random(60);
             $user->password = null;
+            $user->token_expired_at = now()->addHours(24);
             $user->assignRole($data['role']);
             $user->save();
 
@@ -42,9 +43,9 @@ class Helpers{
         }
         // send set password notification
         $name = $user->name;
-        $rememberToken =$user->remember_token;
+        $passwordResetToken =$user->password_reset_token;
         $email = $user->email;
-        $user->notify(new SendSetPasswordLink($name, $rememberToken, $email));
+        $user->notify(new SendSetPasswordLink($name, $passwordResetToken, $email));
         if($data['role']=='Manager'){
             Manager::create([
                 'name'=>$data['name'],

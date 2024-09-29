@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
+             // either you can check expired at from the database column or you can simply get the created at and 24 hours.
             $table->timestamp('created_at')->nullable();
         });
     }

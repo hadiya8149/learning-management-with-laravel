@@ -60,7 +60,7 @@ Route::middleware(['api.request.logs'])->group(function(){
     });
 
 
-    Route::post('/update-forgot-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('password.update');
+    // Route::post('/update-forgot-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('password.update');
 
     Route::middleware('guest')->group(function()
     {

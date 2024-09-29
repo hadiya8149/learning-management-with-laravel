@@ -33,11 +33,15 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $permission10  = Permission::create(['name'=>'user can view all quizzes']);
         $permission11  = Permission::create(['name' => 'user can assign quiz']);
-// student permissions
+
+        // student permissions
         $permission12  = Permission::create(['name' => 'user can attempt assigned quiz']);
         $permission13  = Permission::create(['name' => 'user can view assigned quiz']);
         $permission14  = Permission::create(['name' => 'user can view quiz result']);
-// create roles
+
+        // super visor permission       
+        
+        // create roles
         $adminRole=Role::create(['name'=>'Super Admin']);
         $managerRole = Role::create(['name'=>'Manager']);
         $studentRole = Role::create(['name'=>'Student']);

@@ -57,19 +57,13 @@ class Handler extends ExceptionHandler
             return response()->json(['error'=>'Unauthorized access'], 401);
         });        
         $this->renderable(function(QueryException $exception, $request){
-            return response()->json(['error'=>'internal server error'], 500);
+            dd($exception);
+            return response()->json(['error'=>$exception], 500);
         });
+       
     }
     
-    // public function render($request, Throwable $exception){
-    //     ErrorLog::create([
-    //         'exception'=>$exception->getMessage(),
-    //         'file_name'=>$exception->getFile(),
-    //         'function_name'=>$exception->getCode(),
-    //         'line_number'=>$exception->getLine(),
-    //         'request_id'=>$request->request_id,
-    //     ]);
-    // }
+
 
 
 }

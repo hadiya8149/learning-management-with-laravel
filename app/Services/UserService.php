@@ -25,8 +25,7 @@ class UserService implements UserServiceInterface
     public function login($data)
     {
         $user = User::where('email', $data['email'])->first();
-        $isEmailVerified = $user->email_verified_at;
-        if(!$isEmailVerified){
+        if(!$user->hasVerifiedEmail()){
             return false; // user not allowed to login because he has not set his password yet
         }
         $token = Auth::attempt(['email'=>$data['email'], 'password'=>$data['password']]);
@@ -52,6 +51,7 @@ class UserService implements UserServiceInterface
             return ['role'=>$role, 'permissions'=>$permissions, 'token'=>$token, 'id'=>$id];
 
         }
+
         return ['role'=>$role, 'permissions'=>$permissions, 'token'=>$token];
     }
     
@@ -63,12 +63,14 @@ class UserService implements UserServiceInterface
         return true;
 
     }
+
     public function addManager($data)
     {
-        $userData = ['email'=>$data['email'], 'name'=>$data['name'],'role'=>'Manager'];
-        return Helpers::addUserAndSendSetPasswordMail($userData);
-        
+        $userData = ['email'=>$data['email'], 'name'=>$data['name'],'role'=>$data['role']];
+        return Helpers::addUserAndSendSetPasswordMail($userData);   
     }
+
+
     public function addStudent($data)
     {
         try{

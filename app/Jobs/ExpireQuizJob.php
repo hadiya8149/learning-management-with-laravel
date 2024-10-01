@@ -8,7 +8,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
+use App\Models\Quiz;
 class ExpireQuizJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -30,10 +32,21 @@ class ExpireQuizJob implements ShouldQueue
      */
     public function handle()
     {
-        $quizzes = AssignedQuizzes::where('status', 'active');
+        $quizzes = Quiz::where('end_time','>=', now());
         foreach($quizzes as $quiz){
-            $quiz->status='expired';
-            // either soft delete
+            $assignedQuizzes = $quiz->assignedQuizzes;
+            foreach($assignedQuizzes as $assignedQuiz){
+                Log::info('assigned quiz id');
+
+                Log::info($assignedQuiz->id);
+
+                $assignedQuiz->status='expired';
+                $assignedQuiz->save();
+                Log::info('status after chaning');
+                Log::info($asignedQuiz->status);
+
+            }
         }
+
     }
 }

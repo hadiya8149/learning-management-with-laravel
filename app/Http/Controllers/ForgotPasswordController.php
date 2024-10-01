@@ -19,7 +19,7 @@ class ForgotPasswordController extends Controller
 {
 
 
-    // Override the method that handles a successful reset link response 
+    // Override the method that handles a successful reset link response 'where to put this?
     // protected function sendResetLinkResponse(Request $request, $response)
     // {
     //     return response()->json([
@@ -42,27 +42,5 @@ class ForgotPasswordController extends Controller
         :Helpers::sendFailureResponse(401, 'Invalid email')
        ;
     }
-
-    public function showResetPasswrodForm() #web function not needed
-    {
-
-    }
-    
-    // public function submitResetPasswordForm(PasswordUpdateRequest $request)
-    // {
-    // Paassword::reset($data);
-    //    $data = $request->validated();
-    //    $token = $data['token'];
-    // //    dd(JWTAuth::parseToken($token));
-    // // add logic for token validation;
-    //     $user = User::query()->where('email', $data['email'])->first();
-    //     $user->password = bcrypt($data['password']);
-    //     if($user->save()){
-    //         return Helpers::sendSuccessResponse(200, 'password updated successfully');
-    //     }
-    //     return Helpers::sendFailureResponse(401, 'Unauthorized access');
-       
-    // }
-
 }
 

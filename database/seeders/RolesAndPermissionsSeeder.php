@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
+use App\Models\User;
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
@@ -45,7 +45,8 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole=Role::create(['name'=>'Super Admin']);
         $managerRole = Role::create(['name'=>'Manager']);
         $studentRole = Role::create(['name'=>'Student']);
-
+        $supervisorRole  = Role::create(['name'=>'Supervisor']);
+        $supervisorRole->givePermissionTo([6, 8, 9, 10]);
         $adminRole->givePermissionTo([$permission1->id, $permission2->id, $permission3->id,
                                         $permission4->id, $permission5->id, $permission6->id, $permission7->id,
                                         $permission8->id, $permission9->id, $permission10->id, $permission11->id ]);
@@ -54,6 +55,7 @@ class RolesAndPermissionsSeeder extends Seeder
                                             $permission8->id, $permission9->id]);
 
         $studentRole->givePermissionTo([$permission12->id, $permission13->id, $permission14->id]);
-    
+        // User::withTrashed()->where('id', 1)->restore();
+
     }   
 }

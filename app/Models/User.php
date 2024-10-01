@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Jobs\QueuedPasswordResetJob;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable implements JWTSubject
 { 
@@ -19,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
     use HasRoles;
     
+    use softDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -28,7 +31,8 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'remember_token'
+        'remember_token',
+        'email_verified_at'
     ];
 
     /**
@@ -40,15 +44,18 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'remember_token',
     ];
+    
 
     /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    */
+    
+     //  
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
 
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.

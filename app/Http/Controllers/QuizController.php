@@ -40,9 +40,9 @@ class QuizController extends Controller
         $result = $this->quizService->showQuizByStudentId($studentId);
         return Helpers::sendSuccessResponse(200, 'Quiz list by student id '.$studentId, $result);
     }
-    public function showAssignedQuizzes()
+    public function showAssignedQuizzes(Request $request)
     {
-        $result = $this->quizService->showAssignedQuizzes();
+        $result = $this->quizService->showAssignedQuizzes($request->status);
         return Helpers::sendSuccessResponse(200, 'All assigned quizzes list', $result);
     }
     public function deleteQuizById($id){

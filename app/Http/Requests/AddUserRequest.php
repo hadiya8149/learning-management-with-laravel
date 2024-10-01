@@ -37,6 +37,7 @@ class AddUserRequest extends FormRequest
             return [
             'name'=>'required',
             'email'=>'required|email|unique:users,email',
+            'role'=>'required|exists:roles,name'
             ];
         }
         if($this->routeIs('reject.student')){

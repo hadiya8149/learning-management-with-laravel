@@ -47,7 +47,7 @@ class APIRequestLogs
 
         $controllerAction = optional($request->route())->getActionName();
         $middleware = implode(',', array_keys($request->route()->middleware() ?? []));
-        APIRequestLog::create([
+        $apiRequestLog = APIRequestLog::create([
             'method'=>$request->method(),
             'controller_action'=>$controllerAction,
             'middleware'=>$middleware,
@@ -59,7 +59,8 @@ class APIRequestLogs
             'response_headers'=>json_encode($response->headers->all()),
             'response_json'=>$responseJson,
             'memory_usage'=>$memoryUsage
-        ]);   
+        ]);
+        $request->id = $apiRequestLog->id;
     
     }
 }

@@ -7,6 +7,9 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\VideoController;
+use Illuminate\Database\QueryException;
+
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -21,7 +24,6 @@ use ILluminate\Support\Facades\Auth;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-
 */
 Route::middleware(['api.request.logs'])->group(function(){
 
@@ -39,14 +41,25 @@ Route::middleware(['api.request.logs'])->group(function(){
     
         Route::controller(StudentController::class)->group(function(){
             Route::get('/students', 'viewStudents');
-            Route::get('/my-assigned-quizzes', 'viewAssignedQuizes');
-            Route::post('/attempt-quiz', 'attemptAssignedQuiz');
-        });
-    
         
+                Route::get('/my-assigned-quizzes', 'viewAssignedQuizes');
+        
+            Route::get('/take-quiz', 'attemptAssignedQuiz');
+            Route::post('/submit-quiz-attempt', 'submitQuizAttempt');
+
+        });
+        Route::middleware(['can:user can view managers'])->group(function(){
+            
         Route::controller(ManagerController::class)->group(function(){
             Route::get('/managers', 'viewManagers');
-        
+            Route::delete('/delete-manager', 'deleteManager');
+        });
+        });
+
+        Route::middleware(['can:user can view videos'])->group(function(){
+            Route::controller(VideoController::class)->group(function(){
+                Route::get('/quiz-video-recordings', 'videos');
+            });
         });
         Route::controller(QuizController::class)->group(function(){
             Route::get('/quizzes', 'quizzes');
@@ -56,11 +69,9 @@ Route::middleware(['api.request.logs'])->group(function(){
             Route::get('/assigned-quizzes', 'showAssignedQuizzes');
         
         });
-    
     });
 
 
-    // Route::post('/update-forgot-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('password.update');
 
     Route::middleware('guest')->group(function()
     {

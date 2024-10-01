@@ -22,10 +22,13 @@ return new class extends Migration
         //     $table->rememberToken();
         //     $table->timestamps();
         // });
-        Schema::table('users', function(Blueprint $table){
-            $table->string('reset_password_token')->nullable()->default(null);
+        // Schema::table('users', function(Blueprint $table){
+        //     $table->string('reset_password_token')->nullable()->default(null);
             // $table->datetime('token_expired_at')->nullable()->default(null);
             
+        // });
+        Schema::table('users', function(Blueprint $table){
+            $table->softDeletes();
         });
     }
 

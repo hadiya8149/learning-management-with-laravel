@@ -65,6 +65,7 @@ class UserController extends Controller
         $data = $this->userService->addManager($request->validated());
         return Helpers::sendSuccessResponse(200, 'Manager added succesfully');
     }
+
     public function addStudent(AddUserRequest $request)
     {
         
@@ -85,7 +86,6 @@ class UserController extends Controller
 
       if(!$result){
         return Helpers::sendFailureResponse(401, 'Invalid Credentials');
-
       }
       return Helpers::sendSuccessResponse(200, 'Password updated succesfully');
 

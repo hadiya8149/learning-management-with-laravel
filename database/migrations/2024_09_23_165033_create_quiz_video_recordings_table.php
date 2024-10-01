@@ -15,14 +15,13 @@ return new class extends Migration
     {
         Schema::create('quiz_video_recordings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('quiz_id');
-            $table->unsignedBigInteger('student_id');
-            $table->String('video_path');
-            $table->boolean('status');
-            $table->String('comment');
-            $table->timestamp('created_at');
-            $table->foreign("quiz_id")->references("id")->on("quizzes");
-            $table->foreign("student_id")->references("id")->on("students");
+            
+            $table->unsignedBigInteger('assigned_quiz_id');
+            $table->String('video_url');
+            $table->string('status');
+            $table->String('comment')->default('');
+            $table->timestamps();
+            $table->foreign("assigned_quiz_id")->references("id")->on("assigned_quizzes");
         });
     }
 

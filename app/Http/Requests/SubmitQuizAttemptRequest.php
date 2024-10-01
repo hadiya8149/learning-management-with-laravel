@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use ILluminate\Support\Facades\Auth;
+
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
-class AttemptAssignedQuizRequest extends FormRequest
+class SubmitQuizAttemptRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,8 +15,7 @@ class AttemptAssignedQuizRequest extends FormRequest
      */
     public function authorize()
     {
-        $user = Auth::user();
-        return $user->can('user can attempt assigned quiz'); 
+        return true;
     }
 
     /**
@@ -26,12 +25,23 @@ class AttemptAssignedQuizRequest extends FormRequest
      */
     public function rules()
     {
-        
         return [
             'id'=>'required|exists:assigned_quizzes,id',
-            
+            'student_id'=>'required|exists:students,id',
+
+            'answers'=>'required|json',
+            'video'=>'required'
         ];
     }
+    public function messages()
+    {
+        return [
+            'quiz_id.exists'=>'invalid quiz id',
+            'student_id.exists'=>'invalid student id',
+            'answers'=>'answers must be json object'
+        ];
+    }
+    
     protected function failedValidation(Validator $validator)
     {
         $errors = $this->validator->errors();

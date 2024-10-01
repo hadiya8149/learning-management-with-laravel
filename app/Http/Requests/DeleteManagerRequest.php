@@ -4,9 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use ILluminate\Support\Facades\Auth;
+
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
-class AttemptAssignedQuizRequest extends FormRequest
+class DeleteManagerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,7 +17,7 @@ class AttemptAssignedQuizRequest extends FormRequest
     public function authorize()
     {
         $user = Auth::user();
-        return $user->can('user can attempt assigned quiz'); 
+        return $user->can('user can delete user');
     }
 
     /**
@@ -26,10 +27,8 @@ class AttemptAssignedQuizRequest extends FormRequest
      */
     public function rules()
     {
-        
         return [
-            'id'=>'required|exists:assigned_quizzes,id',
-            
+            'id'=>'required|exists:managers,id'
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -41,5 +40,4 @@ class AttemptAssignedQuizRequest extends FormRequest
         ], 400);
         throw new HttpResponseException($response);
     }
-
 }

@@ -24,6 +24,9 @@ This document provides a comprehensive overview of the Quiz Management System, d
 ## Introduction
 
 The Quiz Management System is a backend system for students that allows them to take assigned quizzes and view real-time results. Students can retake quizzes to improve their scores, and the admin can review quiz attempts. The system is role-based, with specific functionalities for Admin, Manager, and Student roles.
+## Integration
+integrate with mailtrap and include email testing integration credentials in .env file
+
 
 ## Installation
 
@@ -33,3 +36,5 @@ To set up the project, follow these steps:
 git clone https://github.com/hadiya8149/learning-management-with-laravel.git
 cd learning-management-with-laravel
 composer install
+
+

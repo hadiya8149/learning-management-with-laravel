@@ -71,6 +71,7 @@ The system tracks quiz attempts and allows students to retake quizzes to improve
 - Send confirmation emails upon form submission.
 - Admin interface to accept/reject student requests.
 ## Database Design
+ see DatabaseDiagram.png
 ### Tables
 - users
 - quizzes
@@ -80,3 +81,9 @@ The system tracks quiz attempts and allows students to retake quizzes to improve
 - quiz_video_recordings
 - api_request_logs
 - questions
+## Roles and Permissions
+### Roles
+- Super Admin
+- Manager
+- Student
+- Supervisor

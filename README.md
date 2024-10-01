@@ -1,101 +1,35 @@
-Quiz Management System (README)
-A comprehensive Laravel-based application for managing quizzes, users, and roles with robust authentication and authorization mechanisms.
-Table of Contents
-Features
-Installation
-Usage
-Authentication
-Roles and Permissions
-Quiz Management
-Student Submissions
-API Endpoints
-Seeded Users
-Contributing
-License
+# Quiz Management System
 
-Features
-Role-Based Access Control (RBAC): Manage users with roles such as Admin, Manager, and Student using Spatie Laravel Permission package.
-JWT Authentication: Secure login system for all users using JSON Web Tokens.
-Quiz Assignment and Scheduling: Assign quizzes to students with scheduling and expiration logic.
-Email Notifications: Automated emails for password setup, password resets, and submission status updates.
-Student Submissions: Public form for students to submit applications with file uploads (CVs).
-Real-Time Result Calculation: Immediate feedback and score calculation upon quiz submission.
-Video Recording: Students can record and upload videos during quiz attempts for integrity checks.
-Admin and Manager Dashboards: Filter and manage students and quizzes efficiently.
+This document provides a comprehensive overview of the Quiz Management System, detailing the implementation of various features such as role-based access control, email notifications, quiz assignment logic, authentication mechanisms, and more. The system is built using the Laravel framework and leverages several packages and services to enhance functionality.
 
-Installation
-Prerequisites
-PHP >= 8.0
-Composer
-MySQL
-Git
-Steps
-Clone the Repository
-bash
-Copy code
+## Table of Contents
 
-cd quiz_management
-Install Dependencies
-bash
-Copy code
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Project Description](#project-description)
+- [Requirements](#requirements)
+- [Database Design](#database-design)
+- [API Routes](#api-routes)
+- [Packages](#packages)
+- [Services](#services)
+- [Controllers](#controllers)
+- [Middleware](#middleware)
+- [Events](#events)
+- [Listeners](#listeners)
+- [Jobs](#jobs)
+- [Helper Functions](#helper-functions)
+- [Request Validation](#request-validation)
+- [Database Migration and Seeder](#database-migration-and-seeder)
+
+## Introduction
+
+The Quiz Management System is a backend system for students that allows them to take assigned quizzes and view real-time results. Students can retake quizzes to improve their scores, and the admin can review quiz attempts. The system is role-based, with specific functionalities for Admin, Manager, and Student roles.
+
+## Installation
+
+To set up the project, follow these steps:
+
+```bash
+git clone https://github.com/hadiya8149/learning-management-with-laravel.git
+cd learning-management-with-laravel
 composer install
-Copy .env File
-bash
-cp .env.example .env
-Generate Application Key
-bash
-Copy code
-php artisan key:generate
-Configure .env File
-Update database credentials:
-env
-DB_DATABASE=quiz_management
-Configure mail settings for email notifications.
-Run Migrations and Seeders
-php artisan migrate --seed
-Set Up Storage Link
-php artisan storage:link
-Start the Development Server
-php artisan serve
-Usage
-Authentication
-Login using the seeded users or create new accounts.
-JWT Tokens are used for authenticated routes.
-Roles and Permissions
-Admin: Full access to manage users, quizzes, and submissions.
-Manager: Can assign quizzes and view students.
-Student: Can view and attempt assigned quizzes.
-Quiz Management
-Create Quizzes: Admins and Managers can create quizzes.
-Assign Quizzes: Assign quizzes to students with scheduling.
-Attempt Quizzes: Students can attempt quizzes during the active period.
-Results: Immediate feedback after quiz submission.
-Student Submissions
-Public Form: Accessible without authentication.
-File Uploads: Supports CV uploads in PDF, DOC, DOCX formats.
-Admin Review: Admins can accept or reject submissions.
-
-API Endpoints
-Authentication Routes
-POST /login - User login.
-POST /logout - User logout.
-POST /password/forgot - Request password reset.
-POST /password/reset - Reset password.
-POST /password/resend-link - Resend password setup link.
-User Management Routes
-POST /admin/add-manager - Admin adds a manager.
-POST /admin/add-student - Admin adds a student.
-POST /manager/add-student - Manager adds a student.
-Student Submission Routes
-POST /student-submission - Submit student application.
-GET /student-submission/{id}/download-cv - Download student's CV.
-GET /submissions/pending - Get pending submissions.
-Quiz Routes
-POST /quizzes - Create a quiz.
-GET /quizzes - Get all quizzes.
-POST /assign-quiz - Assign quiz to student.
-GET /student/{id}/quizzes - Get assigned quizzes.
-POST /quiz-attempts - Store quiz attempt.
-POST /quiz-results - Calculate and store quiz result.
-Seeded Users
-After running the seeders, you can use the following credentials:

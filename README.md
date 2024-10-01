@@ -37,19 +37,19 @@ git clone https://github.com/hadiya8149/learning-management-with-laravel.git
 cd learning-management-with-laravel
 composer install
 
-
-Project Description
+```
+## Project Description
 This project provides a learning management system backend where:
 
 Students can take quizzes and see real-time results.
 Admins can review quiz recordings, approve or reject student registrations, and manage users.
 Admins, Managers, and Supervisors can assign quizzes to students.
 The system tracks quiz attempts and allows students to retake quizzes to improve scores.
-Requirements
-Admin and Manager Roles Setup:
-Create a Seeder for the Admin role.
-Implement role-based user management for Admin, Manager, and Student roles.
-Allow Admin to add Managers via the back office.
+## Requirements
+1.Admin and Manager Roles Setup:
+2.Create a Seeder for the Admin role.
+3.Implement role-based user management for Admin, Manager, and Student roles.
+4.Allow Admin to add Managers via the back office.
 Email Notifications:
 Send an email to Managers and Students to set up passwords (valid for 24 hours) after Admin actions.
 Handle logic for resending password setup emails if the link expires.

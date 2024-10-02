@@ -14,7 +14,7 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use ILluminate\Support\Facades\Auth;
-
+use App\Models\ErrorLog;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -67,17 +67,17 @@ Route::middleware(['api.request.logs'])->group(function(){
             Route::get('/student/{id}/assigned-quizzes', 'showQuizByStudentId');
             Route::post('/assign-quiz', 'assignQuiz');
             Route::get('/assigned-quizzes', 'showAssignedQuizzes');
-        
         });
     });
-
-
 
     Route::middleware('guest')->group(function()
     {
         Route::post('/forgot-password', [ForgotPasswordController::class, 'submitForgotPasswordForm'])->name('password.forgot');
-    
-    });
-   
+    });   
+    // comment
+});
+
+Route::get('/error', function(){
+        return User::create([]); 
 });
 

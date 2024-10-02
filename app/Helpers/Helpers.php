@@ -2,7 +2,7 @@
 namespace App\Helpers;
 use App\Models\User;
 use Illuminate\Support\Str;
-
+use App\Models\ErrorLog;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Notifications\SendSetPasswordLink;
@@ -87,5 +87,16 @@ class Helpers{
             'data'=>$data
         ]);
 
+    }
+    public static function createErrorLogs($exception, $requestId){
+        // comment
+        ErrorLog::create([
+            'function_name'=>$exception->getTrace()[0]['function'],
+            'line_number'=>$exception->getLine(),
+            'file_name'=>$exception->getFile(),
+            'code'=>(int) $exception->getCode(),
+            'exception'=>$exception->getMessage(),
+            'request_id'=>$requestId,
+        ]);
     }
 }

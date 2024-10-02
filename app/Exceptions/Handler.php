@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Database\QueryException;
 use App\Models\ErrorLog;
+use App\Helpers\Helpers;
 class Handler extends ExceptionHandler
 {
     /**
@@ -57,8 +58,15 @@ class Handler extends ExceptionHandler
             return response()->json(['error'=>'Unauthorized access'], 401);
         });        
         $this->renderable(function(QueryException $exception, $request){
-            dd($exception);
-            return response()->json(['error'=>$exception], 500);
+            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['error'=>'internal server error'], 500);
+        });
+        $this->renderable(function(Exception $exception, $request){
+            Helpers::createErrorLogs($exception, $request->request_id);
+        });
+        $this->renderable(function(Error $error, $request){
+            Helpers::createErrorLogs($error, $request->request_id);
+            // comment
         });
        
     }
